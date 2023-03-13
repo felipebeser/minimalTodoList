@@ -6,11 +6,9 @@ import { Injectable } from '@angular/core';
 })
 export class LocalStorageService {
 
-  constructor() { }
-
   //save an item to local storage
   public save(item: Item) {
-    localStorage.setItem(item.task, JSON.stringify(item));
+    localStorage.setItem(String(item.id), JSON.stringify(item));
   }
 
   //get an item from local storage
@@ -24,16 +22,15 @@ export class LocalStorageService {
 
 
   public delete(item: Item) {
-    localStorage.removeItem(item.task);
+    localStorage.removeItem(String(item.id));
   }
 
-  public key(index: number): Item {
+  public key(index: number): string {
     let itemKey = localStorage.key(index);
-    let item = localStorage.getItem(String(itemKey));
-    if (item != null) {
-      return JSON.parse(item);
+    if (itemKey != null) {
+      return itemKey;
     }
-    return JSON.parse("{}");
+    return "";
   }
 
   public clear() {

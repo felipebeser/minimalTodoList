@@ -13,7 +13,7 @@
   <button class="btn-primary" (click)="addStorage(newItem.value)">Add</button>
 
   <ul>
-    <li *ngFor="let item of items; let i = index" (click)="changeState(item)">
+    <li *ngFor="let item of items; let i = index" (click)="changeState(item)" [className]="item.done ? 'done' : 'undone'" >
       {{ item.task }}
       <button class="hide">editar</button>
       <button class="hide" (click)="deleteStorage(item)">deletar</button>

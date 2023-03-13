@@ -1,7 +1,6 @@
 import { Item } from './item';
 import { LocalStorageService } from './local-storage.service';
-import { Component } from '@angular/core';
-import { GlobalVariables } from './appGlobalVariables';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -9,32 +8,38 @@ import { GlobalVariables } from './appGlobalVariables';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
-  idCount = GlobalVariables.idCount;
+export class AppComponent implements OnInit {
 
   hover: boolean = false;
-
+  id: number = 0;
   constructor(private storage: LocalStorageService) {
+  }
+  ngOnInit(): void {
+    let index = this.storage.length();
+    if (index != 0) this.id = this.storage.length();
   }
 
   title = 'todo';
 
   get items(): Item[] {
+    let storedKeys: string[] = [];
     let storedItems: Item[] = [];
     for (let i = 0; i < this.storage.length(); i++) {
-      let item = this.storage.key(i);
-      if (item != null) {
-        storedItems[i] = item;
-      }
-
+      let key = this.storage.key(i);
+      storedKeys[i] = key;
+    }
+    this.id = Math.max(...storedKeys.map(str => parseInt(str)));
+    let storedKeysSorted = storedKeys.sort();
+    for (let key in storedKeysSorted) {
+      storedItems.push(this.storage.get(Number(key)));
     }
     console.log(storedItems);
-    return storedItems;
+    return storedItems.reverse();
   }
 
   addStorage(task: string) {
-    this.idCount += 1;
-    let item: Item = new Item(task, false);
+    let item: Item = new Item(this.id, task, false);
+    this.id++;
     this.storage.save(item);
   }
 
