@@ -12,14 +12,13 @@ export class LocalStorageService {
   }
 
   //get an item from local storage
-  public get(index: number): Item {
-    let item = localStorage.getItem(String(index));
+  public get(key: number): Item {
+    let item = localStorage.getItem(String(key));
     if (item != null)
       return JSON.parse(item);
     return JSON.parse("{}");
 
   }
-
 
   public delete(item: Item) {
     localStorage.removeItem(String(item.id));
@@ -31,6 +30,10 @@ export class LocalStorageService {
       return itemKey;
     }
     return "";
+  }
+
+  public listKeys(): string[] {
+    return Object.keys(localStorage);
   }
 
   public clear() {

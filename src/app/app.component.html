@@ -1,22 +1,33 @@
-<div class="main">
-  <h1>Minima (todo) list</h1>
-  <label for="addItemInput"></label>
 
+
+<div class="main">
   <input
     #newItem
-    (keyup.enter)="addStorage(newItem.value); newItem.value = ''"
     class="lg-text-input"
-    id="addItemInput"
+    type="text"
     placeholder="What's new to do?"
+    (keyup.enter)="addStorage(newItem.value); newItem.value = ''"
   />
 
-  <button class="btn-primary" (click)="addStorage(newItem.value)">Add</button>
-
   <ul>
-    <li *ngFor="let item of items; let i = index" (click)="changeState(item)" [className]="item.done ? 'done' : 'undone'" >
-      {{ item.task }}
-      <button class="hide">editar</button>
-      <button class="hide" (click)="deleteStorage(item)">deletar</button>
-    </li>
+      <li *ngFor="let item of items; let i = index" (click)="changeState(item)" [className]="item.done ? 'done' : 'undone'" >
+        {{ item.task }}
+      </li>
   </ul>
+
+  <button class="helpBtn" (click)="helpToggle()" [className]="help ? 'btnPressed' : ''" >need help?</button>
+
 </div>
+
+<ng-container *ngIf="help">
+  <div class="helpGuide">
+   <ul class="helpGuideUl">
+    <li>this is a to-do list app using angular and localStorage
+  </li>
+    <li>type a task and hit enter to add</li>
+    <li>click the task to mark as done</li>
+    <li>click again to delete it</li>
+   </ul>
+
+  </div>
+</ng-container>

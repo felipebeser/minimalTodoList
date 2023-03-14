@@ -1,6 +1,6 @@
 import { Item } from './item';
 import { LocalStorageService } from './local-storage.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,43 +8,41 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  hover: boolean = false;
+  help: boolean = false;
   id: number = 0;
   constructor(private storage: LocalStorageService) {
-  }
-  ngOnInit(): void {
-    let index = this.storage.length();
-    if (index != 0) this.id = this.storage.length();
   }
 
   title = 'todo';
 
   get items(): Item[] {
-    let storedKeys: string[] = [];
+    let storedKeys: string[] = this.storage.listKeys();
+    let storedKeysSorted = storedKeys.map(str => parseInt(str)).sort((a, b) => a - b);
+
     let storedItems: Item[] = [];
-    for (let i = 0; i < this.storage.length(); i++) {
-      let key = this.storage.key(i);
-      storedKeys[i] = key;
-    }
-    this.id = Math.max(...storedKeys.map(str => parseInt(str)));
-    let storedKeysSorted = storedKeys.sort();
-    for (let key in storedKeysSorted) {
-      storedItems.push(this.storage.get(Number(key)));
-    }
-    console.log(storedItems);
-    return storedItems.reverse();
+
+    storedKeysSorted.forEach(key => {
+      storedItems.unshift(this.storage.get(key));
+    })
+    let numKeys = storedKeys.map(str => parseInt(str)).filter(i => !isNaN(i));
+    let lastId = Math.max(...numKeys);
+    this.id = lastId + 1;
+    if (this.id < 0) this.id = 0;
+    return storedItems;
   }
 
   addStorage(task: string) {
-    let item: Item = new Item(this.id, task, false);
-    this.id++;
-    this.storage.save(item);
+    if (task) {
+      let item: Item = new Item(this.id, task, false);
+      this.storage.save(item);
+    }
+    return null;
   }
 
-  getStorage(index: number): Item {
-    return this.storage.get(index);
+  getStorage(key: number): Item {
+    return this.storage.get(key);
   }
 
   getKeyStorage(task: number) {
@@ -56,7 +54,16 @@ export class AppComponent implements OnInit {
   }
 
   changeState(item: Item) {
-    item.done = !item.done
-    this.storage.save(item);
+    if (!item.done) {
+      item.done = !item.done
+      this.storage.save(item);
+    }
+    else {
+      this.storage.delete(item);
+    }
+  }
+
+  helpToggle(): void {
+    this.help = !this.help;
   }
 }
