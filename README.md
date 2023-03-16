@@ -1,5 +1,13 @@
 # TodoList
 
+This is a to-do list built with Angular and LocalStorage.
+
+You can try it live here: https://felipebeser.github.io/minimalTodoList/
+
+
+![image](https://user-images.githubusercontent.com/32824917/225498650-0fd69343-1349-41f7-8824-4f67c3b6d173.png)
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.5.
 
 ## Development server
